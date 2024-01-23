@@ -3,7 +3,7 @@
   become: yes
   tasks:
   - name: setup NPM source
-    ansible.builtin.shell: "curl -sL https://rpm.nodesource.com/setup_lts.x | bash - && yum install -y nodejs"
+    ansible.builtin.shell: "curl -sL https://rpm.nodesource.com/setup_14.x | bash"
 
   - name: Install NodeJS
     ansible.builtin.yum:
