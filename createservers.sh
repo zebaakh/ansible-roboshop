@@ -49,6 +49,6 @@ create_ec2_instance() {
 #     '
 # }
 # Loop through service names and create EC2 instances
-for SERVICE_NAME in "${[@]}"; do
+for SERVICE_NAME in "$@"; do
     create_ec2_instance $SERVICE_NAME
 done
