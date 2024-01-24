@@ -4,7 +4,7 @@
   tasks:
   - name: Install EPEL repository using yum
     become: yes
-    command: yum install -y epel-release
+    command: amazon-linux-extras install epel -y
 
   - name: install nginx
     ansible.builtin.yum:
