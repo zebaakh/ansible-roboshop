@@ -2,11 +2,6 @@
   hosts: web
   become: yes
   tasks:
-  - name: Install the EPEL repository (example for CentOS/RHEL)
-    become: yes
-    yum:
-    name: epel-release
-    state: present
   - name: install nginx
     ansible.builtin.yum:
       name: nginx
