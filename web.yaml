@@ -2,6 +2,11 @@
   hosts: web
   become: yes
   tasks:
+  - name: Install EPEL repo
+    yum:
+     name: epel-release
+     state: present
+     
   - name: install nginx
     ansible.builtin.yum:
       name: nginx
