@@ -2,10 +2,6 @@
   hosts: mongodb
   become: yes
   tasks:
-  - name: Update package cache
-    yum:
-    name: '*'
-    state: latest
   - name: copy mongo repo to yum.repos.d
     ansible.builtin.copy:
       src: mongodb.repo
