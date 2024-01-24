@@ -2,11 +2,6 @@
   hosts: web
   become: yes
   tasks:
-  - name: Install the EPEL repository
-    become: yes
-     name: epel-release
-     state: presents
-
   - name: install nginx
     ansible.builtin.yum:
       name: nginx
