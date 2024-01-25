@@ -2,14 +2,15 @@
   hosts: redis
   become: yes
   tasks:
-  - name: Install redis repo
-    ansible.builtin.yum:
-      name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm
-      state: installed
-      disable_gpg_check: true
+  - name: Install Redis repo
+      amazon.linux.yum:
+        name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm
+        state: present
+        disable_gpg_check: true
 
   - name: Enable redis 6.2
-    ansible.builtin.command: yum module enable redis:remi-6.2 -y
+    ansible.builtin.command: amazon-linux-extras enable redis6.2
+      become: true
 
   - name: Install redis
     ansible.builtin.yum:
