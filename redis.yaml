@@ -10,7 +10,7 @@
 
   - name: Enable redis 6.2
     ansible.builtin.command: amazon-linux-extras enable redis6.2
-      become: true
+    become: true
 
   - name: Install redis
     ansible.builtin.yum:
