@@ -7,7 +7,7 @@
     command: amazon-linux-extras enable redis4.0
 
   - name: Install Redis repo
-    ansible.builtin.yum:
+    amazon.linux.yum:
       name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm
       state: present
       disable_gpg_check: true
