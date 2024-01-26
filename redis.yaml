@@ -4,7 +4,7 @@
   tasks:
   - name: Install EPEL repository using yum
     become: yes
-    command: amazon-linux-extras enable redis6.0
+    command: amazon-linux-extras enable redis6.2
 
   - name: Install Redis repo
     ansible.builtin.yum:
@@ -12,8 +12,8 @@
       state: present
       disable_gpg_check: true
 
-  - name: Enable redis 6.0
-    ansible.builtin.command: amazon-linux-extras enable redis6.0
+  - name: Enable redis 6.2
+    ansible.builtin.command: amazon-linux-extras enable redis6.2
     become: true
 
   - name: Install redis
