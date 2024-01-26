@@ -15,7 +15,7 @@
         path: /etc/redis.conf
         regexp: '127.0.0.1'
         replace: '0.0.0.0'
-      when: ansible.builtin.stat(path='/etc/redis.conf').stat.exists
+      when: "'/etc/redis.conf' is file"
   # Check if the file exists using the stat module
 
     - name: Start and enable redis
