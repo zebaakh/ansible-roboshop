@@ -29,10 +29,6 @@
       state: started
       enabled: true
   
-  - name: Setup MySQL root password
-    ansible.builtin.mysql_user:
-      name: root
-      host: localhost
-      password: RoboShop@1
-      login_unix_socket: /var/lib/mysql/mysql.sock
+  - name: setup mysql root password
+    ansible.builtin.command: mysql_secure_installation --set-root-pass RoboShop@1
   
