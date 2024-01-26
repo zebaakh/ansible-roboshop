@@ -2,30 +2,25 @@
   hosts: redis
   become: yes
   tasks:
-  - name: Enable Redis topic
-    command: amazon-linux-extras enable redis4.0
-  - name: Install Redis
-    yum:
-      name: redis
-      state: present
+    - name: Enable Redis topic
+      command: amazon-linux-extras enable redis4.0
+    - name: Install Redis
+      yum:
+        name: redis
+        state: present
 
-  - name: Enable redis 4.0
-    ansible.builtin.command: amazon-linux-extras enable redis4.0
-    become: true
+    - name: Allow remote connections to redis
+      ansible.builtin.replace:
+        path: /etc/redis.conf
+        regexp: '127.0.0.1'
+        replace: '0.0.0.0'
+      when: ansible.builtin.file:
+        path: /etc/redis.conf
+        state: file
+        exists: true
 
-  - name: Install redis
-    ansible.builtin.yum:
-      name: redis
-      state: installed
-  
-  - name: Allow remote connections to redis
-    ansible.builtin.replace:
-      path: /etc/redis.conf
-      regexp: '127.0.0.1'
-      replace: '0.0.0.0'
-
-  - name: start and enable redis
-    ansible.builtin.service:
-      name: redis
-      state: started
-      enabled: yes
+    - name: Start and enable redis
+      ansible.builtin.service:
+        name: redis
+        state: started
+        enabled: yes
