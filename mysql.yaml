@@ -3,7 +3,11 @@
   become: yes
   tasks:
   - name: Disable current MySQL version
-    ansible.builtin.command: yum disable mysql -y
+    ansible.builtin.ini_file:
+      path: /etc/yum.repos.d/mysql.repo
+      section: mysql
+      option: enabled
+      value: 0
    
   - name: copy mysql repo
     ansible.builtin.copy:
@@ -22,5 +26,9 @@
       enabled: true
   
   - name: setup mysql root password
-    ansible.builtin.command: mysql_secure_installation --set-root-pass RoboShop@1
+    ansible.builtin.mysql_user:
+      name: root
+      host: localhost
+      password: RoboShop@1
+      login_unix_socket: true
   
