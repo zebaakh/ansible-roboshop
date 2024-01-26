@@ -5,7 +5,7 @@
   - name: Enable Redis topic
     command: amazon-linux-extras enable redis4.0
   - name: Install Redis
-    amazon.linux.yum:
+    yum:
       name: redis
       state: present
 
