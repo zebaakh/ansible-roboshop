@@ -4,10 +4,11 @@
   tasks:
     - name: Enable Redis topic
       command: amazon-linux-extras enable redis4.0
+    
     - name: Install Redis
-      yum:
-      name: redis
-      state: present
+      ansible.builtin.yum:
+        name: redis
+        state: present
 
     - name: Allow remote connections to redis
       ansible.builtin.replace:
