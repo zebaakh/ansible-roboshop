@@ -18,6 +18,10 @@
     ansible.builtin.yum:
       name: mysql-community-server
       state: installed
+  - name: Install MySQL client library for Python
+    ansible.builtin.yum:
+      name: MySQL-python
+      state: present
 
   - name: restart mysql
     ansible.builtin.service:
