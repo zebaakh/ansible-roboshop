@@ -72,7 +72,7 @@
       state: installed
 
   - name: load user data
-    ansible.builtin.command: mongo --host 172.31.21.154 < /app/schema/user.js     #private ip of mongodb server
+    ansible.builtin.command: mongo --host 172.31.46.249 < /app/schema/user.js     #private ip of mongodb server
 
   - name: restart user
     ansible.builtin.service:
