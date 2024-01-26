@@ -3,11 +3,11 @@
   become: yes
   tasks:
   - name: Enable Redis topic
-      command: amazon-linux-extras enable redis4.0
+    command: amazon-linux-extras enable redis4.0
   - name: Install Redis
-      amazon.linux.yum:
-        name: redis
-        state: present
+    amazon.linux.yum:
+      name: redis
+      state: present
 
   - name: Enable redis 4.0
     ansible.builtin.command: amazon-linux-extras enable redis4.0
