@@ -2,48 +2,52 @@
   hosts: web
   become: yes
   tasks:
-  - name: Install EPEL repository using yum
-    become: yes
-    command: amazon-linux-extras install epel -y
+    - name: Install EPEL repository using yum
+      command: amazon-linux-extras install epel -y
 
-  - name: install nginx
-    ansible.builtin.yum:
-      name: nginx
-      state: installed
+    - name: Install nginx
+      ansible.builtin.yum:
+        name: nginx
+        state: present
 
-  - name: start and enable nginx
-    ansible.builtin.service:
-      name: nginx
-      state: started
-      enabled: yes
+    - name: Start and enable nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
 
-  - name: remove html directory
-    ansible.builtin.file:
-      path: /usr/share/nginx/html
-      state: absent
-      
-  - name: create html directory
-    ansible.builtin.file:
-      path: /usr/share/nginx/html
-      state: directory
-  
-  - name: download web artifact
-    ansible.builtin.get_url:
-      url: https://roboshop-builds.s3.amazonaws.com/web.zip
-      dest: /tmp
+    - name: Remove existing HTML directory
+      ansible.builtin.file:
+        path: /usr/share/nginx/html
+        state: absent
+      ignore_errors: yes
 
-  - name: extract catalogue artifact
-    ansible.builtin.unarchive:
-      src: /tmp/web.zip
-      dest: /usr/share/nginx/html
-      remote_src: yes
+    - name: Create HTML directory
+      ansible.builtin.file:
+        path: /usr/share/nginx/html
+        state: directory
+        mode: '0755'  # Adjust permissions as needed
 
-  - name: copy roboshop.conf
-    ansible.builtin.copy:
-      src: roboshop.conf
-      dest: /etc/nginx/default.d/roboshop.conf
-    
-  - name: restart nginx
-    ansible.builtin.service:
-      name: nginx
-      state: restarted
+    - name: Download web artifact
+      ansible.builtin.get_url:
+        url: https://roboshop-builds.s3.amazonaws.com/web.zip
+        dest: /tmp
+
+    - name: Extract web artifact
+      ansible.builtin.unarchive:
+        src: /tmp/web.zip
+        dest: /usr/share/nginx/html
+        remote_src: yes
+      notify: restart nginx
+
+    - name: Copy roboshop.conf
+      ansible.builtin.copy:
+        src: roboshop.conf
+        dest: /etc/nginx/default.d/roboshop.conf
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
