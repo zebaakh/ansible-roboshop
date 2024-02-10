@@ -2,39 +2,39 @@
   hosts: mysql
   become: yes
   tasks:
-  - name: Disable current MySQL version
-    ansible.builtin.ini_file:
-      path: /etc/yum.repos.d/mysql.repo
-      section: mysql
-      option: enabled
-      value: 0
+    - name: Disable current MySQL version
+      ansible.builtin.ini_file:
+        path: /etc/yum.repos.d/mysql.repo
+        section: mysql
+        option: enabled
+        value: 0
    
-  - name: copy mysql repo
-    ansible.builtin.copy:
-      src: mysql.repo
-      dest: /etc/yum.repos.d/mysql.repo
+    - name: copy mysql repo
+      ansible.builtin.copy:
+        src: mysql.repo
+        dest: /etc/yum.repos.d/mysql.repo
 
-  - name: Install MySQL community server
-    ansible.builtin.yum:
-      name: mysql-community-server
-      state: installed
-  - name: Install MySQL client library for Python
-    ansible.builtin.yum:
-      name: MySQL-python
-      state: present
+    - name: Install MySQL community server
+      ansible.builtin.yum:
+        name: mysql-community-server
+        state: installed
+    - name: Install MySQL client library for Python
+      ansible.builtin.yum:
+        name: MySQL-python
+        state: present
 
-  - name: restart mysql
-    ansible.builtin.service:
-      name: mysqld
-      state: started
-      enabled: true
+    - name: restart mysql
+      ansible.builtin.service:
+        name: mysqld
+        state: started
+        enabled: true
   
-  - name: Set MySQL root password
-  ansible.builtin.mysql_user:
-    name: root
-    password: "RoboShop@1"
-    login_user: root
-    login_password: ""
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    state: present
+    - name: Set MySQL root password
+      ansible.builtin.mysql_user:
+        name: root
+        password: "RoboShop@1"
+        login_user: root
+        login_password: ""
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        state: present
   
