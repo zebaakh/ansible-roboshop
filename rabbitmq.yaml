@@ -15,7 +15,7 @@
         name: rabbitmq-server
         state: present
       when: 
-        - repo_output|success
+        - repo_output.changed
 
     - name: Restart RabbitMQ
       ansible.builtin.service:
@@ -23,14 +23,14 @@
         state: restarted
         enabled: true
       when: 
-        - repo_output|success
+        - repo_output.changed
 
     - name: Create RabbitMQ User
       ansible.builtin.shell: rabbitmqctl add_user roboshop roboshop123
       when: 
-        - repo_output|success
+        - repo_output.changed
 
     - name: Setup Permissions
       ansible.builtin.shell: rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
       when: 
-        - repo_output|success
+        - repo_output.changed
