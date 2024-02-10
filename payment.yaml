@@ -2,65 +2,56 @@
   hosts: payment
   become: yes
   tasks:
-  - name: Install Python
-    ansible.builtin.yum:
-      name: "{{item}}"
-      state: installed
-    loop:
-    - python36
-    - gcc
-    - python3-devel
+    - name: Install Python and required packages
+      ansible.builtin.yum:
+        name: "{{ item }}"
+        state: installed
+      loop:
+        - python3
+        - gcc
+        - python3-devel
 
-  - name: check roboshop user exist or not
-    ansible.builtin.command: id roboshop
-    register: out #output is variable name
-    ignore_errors: true
+    - name: Check if roboshop user exists
+      ansible.builtin.getent:
+        database: passwd
+        username: roboshop
+      register: roboshop_user
+      ignore_errors: true
 
-  - when: out.rc != 0
-    name: create user roboshop
-    become: yes # we need sudo access for this task only
-    ansible.builtin.user:
-      name: roboshop
+    - name: Create roboshop user if it doesn't exist
+      ansible.builtin.user:
+        name: roboshop
+        state: present
+        system: no
+        shell: /bin/bash
+        create_home: yes
+      when: roboshop_user.rc != 0
 
-  - name: check /app directory exists or not
-    ansible.builtin.stat:
-      path: /app
-    register: directory
+    - name: Ensure /app directory exists
+      ansible.builtin.file:
+        path: /app
+        state: directory
 
-  - name: print the directory stats
-    ansible.builtin.debug:
-      msg: "output: {{directory}}"
+    - name: Download payment and extract
+      ansible.builtin.unarchive:
+        src: https://roboshop-builds.s3.amazonaws.com/payment.zip
+        dest: /app
+        remote_src: yes
 
-  - when: directory.stat.exists == False
-    name: create /app directory
-    ansible.builtin.file:
-      path: /app
-      state: directory
+    - name: Install Python dependencies
+      ansible.builtin.command: pip3 install -r /app/requirements.txt
+      args:
+        chdir: /app
 
-  - name: Download payment and extract
-    ansible.builtin.unarchive:
-      src: https://roboshop-builds.s3.amazonaws.com/payment.zip
-      dest: /app
-      remote_src: yes
+    - name: Copy payment service unit file
+      ansible.builtin.copy:
+        src: payment.service
+        dest: /etc/systemd/system/payment.service
+      notify: Restart payment service
 
-  - name: Install dependencies
-    ansible.builtin.command: pip3.6 install -r requirements.txt
-    args:
-      chdir: /app
-
-  - name: copy payment service
-    ansible.builtin.copy:
-      src: payment.service
-      dest: /etc/systemd/system/payment.service
-
-  - name: deamon reload
-    ansible.builtin.systemd:
-      daemon_reload: true
-
-  - name: restart payment
-    ansible.builtin.service:
-      name: payment
-      state: restarted
-      enabled: true
-
-  
+  handlers:
+    - name: Restart payment service
+      ansible.builtin.systemd:
+        name: payment
+        state: restarted
+        enabled: yes
