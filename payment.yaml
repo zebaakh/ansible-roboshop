@@ -12,9 +12,7 @@
         - python3-devel
 
     - name: Check if roboshop user exists
-      ansible.builtin.getent:
-        database: passwd
-        username: roboshop
+      ansible.builtin.command: id roboshop
       register: roboshop_user
       ignore_errors: true
 
@@ -25,7 +23,7 @@
         system: no
         shell: /bin/bash
         create_home: yes
-      when: roboshop_user.rc != 0
+      when: roboshop_user|failed
 
     - name: Ensure /app directory exists
       ansible.builtin.file:
