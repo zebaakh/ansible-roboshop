@@ -30,11 +30,12 @@
         enabled: true
   
     - name: Set MySQL root password
-      ansible.builtin.mysql_user:
+      mysql_user:
         name: root
-        password: "RoboShop@1"
-        login_user: root
-        login_password: ""
+        password: "YourRootPasswordHere"
         login_unix_socket: /var/run/mysqld/mysqld.sock
+        check_implicit_admin: yes
+        host_all: yes
+        priv: "*.*:ALL,GRANT"
         state: present
   
